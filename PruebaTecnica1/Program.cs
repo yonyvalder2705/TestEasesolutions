@@ -25,9 +25,13 @@ namespace PruebaTecnica1
             for (int i = 0; i < allroute; i++)
             {
                 nextposition = data.nextposition(nextposition[0, 0], nextposition[0, 1], nextposition[0, 2]);
-                route = route + ";" + nextposition[0,2].ToString();
+                if(nextposition[0,0] > 0 && nextposition[0, 1] > 0)
+                {
+                    route = route + ";" + nextposition[0, 2].ToString();
+                }
+                
             }
-
+            Console.WriteLine("the following is the descent route :");
             Console.WriteLine(route);
             Console.ReadLine();
 

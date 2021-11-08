@@ -73,13 +73,12 @@ namespace PruebaTecnica1
         public int[,] nextposition(int x, int y, int numerostart)
         {
             int[,] arrayposition = new int[5, 2] { { x, y - 1 }, { x, y + 1 }, { x + 1, y - 1 }, { x + 1, y }, { x + 1, y + 1 } };
-            int[,] arrayminornumber = new int[5, 3];
             int[,] coordinates = new int[1, 3];
             for (int a = 0; a < 5; a++)
             {
-                int numbervalidate = arraydata[arrayposition[a, 0], arrayposition[a, 1]];
                 if(arrayposition[a, 0] >= 0 && arrayposition[a, 1] >= 0)
                 {
+                    int numbervalidate = arraydata[arrayposition[a, 0], arrayposition[a, 1]];
                     if (x +1 == arrayposition[a, 0] && y == arrayposition[a, 1] && numbervalidate < numerostart)
                     {
                         coordinates[0, 0] = arrayposition[a, 0];
