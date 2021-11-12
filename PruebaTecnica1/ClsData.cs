@@ -6,10 +6,11 @@ namespace PruebaTecnica1
 {
     public class ClsData
     {
-        public int x1 = Convert.ToInt32(ConfigurationManager.AppSettings["x"]);
-        public int y1 = Convert.ToInt32(ConfigurationManager.AppSettings["x"]);
+        public int x1 = 0;
+        public int y1 = 0;
         public string file = ConfigurationManager.AppSettings["fileroute"];
         public int[,] arraydata = new int[0, 0];
+        string route = "";
 
         public ClsData()
         {
@@ -70,74 +71,76 @@ namespace PruebaTecnica1
             return rpt;
         }
 
-        public int[,] nextposition(int x, int y, int numerostart)
+        public int [,] nextposition(int x, int y, int numerostart)
         {
-            int[,] arrayposition = new int[5, 2] { { x, y - 1 }, { x, y + 1 }, { x + 1, y - 1 }, { x + 1, y }, { x + 1, y + 1 } };
             int[,] coordinates = new int[1, 3];
-            for (int a = 0; a < 5; a++)
+            if (x > 0  && y > 0)
             {
-                if(arrayposition[a, 0] >= 0 && arrayposition[a, 1] >= 0)
+                int[,] arrayposition = new int[5, 2] { { x, y - 1 }, { x, y + 1 }, { x + 1, y - 1 }, { x + 1, y }, { x + 1, y + 1 } };
+                int[] numbernextposition = new int[5];
+                numbernextposition[0] = arraydata[arrayposition[0, 0], arrayposition[0, 1]];
+                numbernextposition[1] = arraydata[arrayposition[1, 0], arrayposition[1, 1]];
+                numbernextposition[2] = arraydata[arrayposition[2, 0], arrayposition[2, 1]];
+                numbernextposition[3] = arraydata[arrayposition[3, 0], arrayposition[3, 1]];
+                numbernextposition[4] = arraydata[arrayposition[4, 0], arrayposition[4, 1]];
+                if (numbernextposition[3] < numerostart)
                 {
-                    int numbervalidate = arraydata[arrayposition[a, 0], arrayposition[a, 1]];
-                    if (x +1 == arrayposition[a, 0] && y == arrayposition[a, 1] && numbervalidate < numerostart)
+                    for (int i = 0; i < numbernextposition.Length; i++)
                     {
-                        coordinates[0, 0] = arrayposition[a, 0];
-                        coordinates[0, 1] = arrayposition[a, 1];
-                        coordinates[0, 2] = numbervalidate;
-                        break;
-                    }
-                    else
-                    {
-                        if (numbervalidate < numerostart)
+                        if (numbernextposition[3] > numbernextposition[i])
                         {
-                            coordinates[0, 0] = arrayposition[a, 0];
-                            coordinates[0, 1] = arrayposition[a, 1];
-                            coordinates[0, 2] = numbervalidate;
+                            coordinates[0, 0] = arrayposition[3, 0];
+                            coordinates[0, 1] = arrayposition[3, 1];
+                            coordinates[0, 2] = numbernextposition[3];
+                            break;
+                        }
+                        else
+                        {
+                            coordinates[0, 0] = arrayposition[0, 0];
+                            coordinates[0, 1] = arrayposition[0, 1];
+                            coordinates[0, 2] = numbernextposition[i];
                             break;
                         }
                     }
                 }
-                
             }
             return coordinates;
         }
 
         private int[,] createdata()
         {
-            int[,] arraydatacreate = new int[x1, y1];
-            string line = "";
-            StreamReader readfile = new StreamReader(file);
-            line = readfile.ReadLine();
-            while (line != null)
-            {
-                for (int x2 = 0; x2 < 1000; x2++)
-                {
-                    line = readfile.ReadLine();
-                    if (line != null)
-                    {
-                        string[] arrayline = line.Split(' ');
-                        if (arrayline.Length <= 2)
-                        {
-                            x1 = Convert.ToInt32(arrayline[0]);
-                            y1 = Convert.ToInt32(arrayline[1]);
-                        }
-                        else
-                        {
-                            for (int i = 0; i < arrayline.Length; i++)
-                            {
-                                arraydatacreate[x2, i] = Convert.ToInt32(arrayline[i]);
-                            }
-                        }
+            int line1 = 0;
+            int line2 = 0;
+            string[] lines = File.ReadAllLines(file);
 
-                    }
+            foreach (var lineText in lines)
+            {
+                var temparraystart = lineText.Split(' ');
+                if (temparraystart.Length == 2)
+                {
+                    x1 = Convert.ToInt32(temparraystart[0]);
+                    y1 = Convert.ToInt32(temparraystart[1]);
                 }
+                break;
             }
 
+            int[,] arraydatatemp = new int[x1, y1];
 
-            readfile.Close();
-
-
-            return arraydatacreate;
+            for (int i = 1; i < lines.Length; i++)
+            {
+                var temparraystart = lines[i].Split(' ');
+                if (temparraystart.Length > 2)
+                {
+                    foreach (var item2 in temparraystart)
+                    {
+                        arraydatatemp[line1, line2] = Convert.ToInt32(item2);
+                        line2++;
+                    }
+                    line1++;
+                    line2 = 0;
+                }
+            }
+            return arraydatatemp;
         }
     }
 }
